@@ -19,4 +19,9 @@ export class BookingApi {
   async getBooking(bookingId: number): Promise<APIResponse> {
     return await this.request.get(`${this.basePath}/${bookingId}`);
   }
+  async getByFirstname(fname: string): Promise<APIResponse> {
+    return await this.request.get(`${this.basePath}?firstname=${fname}`);
+  }
+
+  
 }
