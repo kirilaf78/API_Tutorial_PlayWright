@@ -22,3 +22,10 @@ export function generateBookingData() {
     additionalneeds: "super bowls",
   };
 }
+
+export function generateTokenData() {
+  return {
+    "username": "admin",
+    "password": "password123",
+  };
+}

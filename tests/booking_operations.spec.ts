@@ -1,4 +1,5 @@
 import { test, expect } from "../fixtures/api_fixtures";
+import { generateTokenData } from "../test_data";
 
 test.describe("Booking API operations", () => {
   test("Post API request using dynamic data", async ({
@@ -37,4 +38,19 @@ test.describe("Booking API operations", () => {
     //console.log("GET response body:", getResponseBody);
     expect(getResponseBody[0].bookingid).toEqual(bookingId);
   });
+
+  test("Update booking", async ({ bookingApi, createdBookingId, requestData }) => {
+    const tokenResponse = await bookingApi.getToken(generateTokenData());
+    expect(tokenResponse).toBeOK();
+    const tokenResponseBody = await tokenResponse.json();
+    console.log("Token response body:", tokenResponseBody);
+    const token = tokenResponseBody.token;
+    const updatedBookingResponse = await bookingApi.updateBooking(createdBookingId, requestData, token);
+    expect(updatedBookingResponse).toBeOK();
+    const updatedBookingResponseBody = await updatedBookingResponse.json();
+    console.log("Updated booking response body:", updatedBookingResponseBody);
+    expect(updatedBookingResponseBody).toMatchObject(requestData);
+  });
+
+
 });

@@ -1,10 +1,10 @@
 // api/booking-api.ts
-import { APIRequestContext, APIResponse } from '@playwright/test';
+import { APIRequestContext, APIResponse } from "@playwright/test";
 
 export class BookingApi {
   // Класс принимает контекст запроса от Playwright
   readonly request: APIRequestContext;
-  readonly basePath = '/booking';
+  readonly basePath = "/booking";
 
   constructor(request: APIRequestContext) {
     this.request = request;
@@ -23,5 +23,18 @@ export class BookingApi {
     return await this.request.get(`${this.basePath}?firstname=${fname}`);
   }
 
-  
+  async getToken(data: object): Promise<APIResponse> {
+    return await this.request.post("/auth", { data });
+  }
+
+  async updateBooking(
+    bookingId: number,
+    data: object,
+    token: string,
+  ): Promise<APIResponse> {
+    return await this.request.put(`${this.basePath}/${bookingId}`, {
+      headers: { Cookie: `token=${token}`, "Content-Type": "application/json" },
+      data: data,
+    });
+  }
 }
