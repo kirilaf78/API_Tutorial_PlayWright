@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { DateTime } from "luxon";
 
-// Экспортируем функцию вместо константы
+
 export function generateBookingData() {
   const fname = faker.person.firstName();
   const lname = faker.person.lastName();
@@ -25,7 +25,13 @@ export function generateBookingData() {
 
 export function generateTokenData() {
   return {
-    "username": "admin",
-    "password": "password123",
+    username: "admin",
+    password: "password123",
+  };
+}
+
+export function generatePartialBookingData() {
+  return {
+    firstname: faker.person.firstName(),
   };
 }

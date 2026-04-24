@@ -1,5 +1,5 @@
 import { test, expect } from "../fixtures/api_fixtures";
-import { generateTokenData } from "../test_data";
+import { BookingApi } from "../api-helpers/booking_api";
 
 test.describe("Booking API operations", () => {
   test("Post API request using dynamic data", async ({
@@ -9,11 +9,9 @@ test.describe("Booking API operations", () => {
     const postResponse = await bookingApi.createBooking(requestData);
     const responseBody = await postResponse.json();
     expect(postResponse).toBeOK();
-    //console.log(responseBody);
     expect(responseBody.booking).toMatchObject(requestData);
   });
 
-  // Сам тест проверяет только бизнес-логику GET запроса
   test("Should retrieve an existing booking by ID", async ({
     bookingApi,
     createdBookingId,
@@ -24,7 +22,6 @@ test.describe("Booking API operations", () => {
 
     const getResponseBody = await getResponse.json();
     expect(getResponseBody).toMatchObject(requestData);
-    //console.log("GET response body:", getResponseBody);
   });
   test("Get booking by firstname", async ({
     bookingApi,
@@ -35,22 +32,52 @@ test.describe("Booking API operations", () => {
     expect(getResponse).toBeOK();
 
     const getResponseBody = await getResponse.json();
-    //console.log("GET response body:", getResponseBody);
     expect(getResponseBody[0].bookingid).toEqual(bookingId);
   });
 
-  test("Update booking", async ({ bookingApi, createdBookingId, requestData }) => {
-    const tokenResponse = await bookingApi.getToken(generateTokenData());
-    expect(tokenResponse).toBeOK();
-    const tokenResponseBody = await tokenResponse.json();
-    console.log("Token response body:", tokenResponseBody);
-    const token = tokenResponseBody.token;
-    const updatedBookingResponse = await bookingApi.updateBooking(createdBookingId, requestData, token);
+  test("Update booking", async ({
+    bookingApi,
+    createdBookingId,
+    requestData,
+    validToken,
+  }) => {
+    const updatedBookingResponse = await bookingApi.updateBooking(
+      createdBookingId,
+      requestData,
+      validToken,
+    );
     expect(updatedBookingResponse).toBeOK();
     const updatedBookingResponseBody = await updatedBookingResponse.json();
-    console.log("Updated booking response body:", updatedBookingResponseBody);
     expect(updatedBookingResponseBody).toMatchObject(requestData);
   });
 
+  test("Partial update booking", async ({
+    bookingApi,
+    createdBookingId,
+    partialBookingData,
+    validToken,
+  }) => {
+    const updatedBookingResponse = await bookingApi.patchBooking(
+      createdBookingId,
+      partialBookingData,
+      validToken,
+    );
+    expect(updatedBookingResponse).toBeOK();
+    const responseBody = await updatedBookingResponse.json();
+    expect(responseBody).toMatchObject(partialBookingData);
+  });
 
+  test("Delete booking", async ({
+    bookingApi,
+    createdBookingId,
+    validToken,
+  }) => {
+    const deleteResponse = await bookingApi.deleteBooking(
+      createdBookingId,
+      validToken,
+    );
+    expect(deleteResponse).toBeOK();
+    const responseBody = await deleteResponse.text();
+    expect(responseBody).toEqual(BookingApi.DELETE_SUCCESS_MSG);
+  });
 });

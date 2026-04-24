@@ -5,6 +5,7 @@ export class BookingApi {
   // Класс принимает контекст запроса от Playwright
   readonly request: APIRequestContext;
   readonly basePath = "/booking";
+  static readonly DELETE_SUCCESS_MSG = "Created";
 
   constructor(request: APIRequestContext) {
     this.request = request;
@@ -27,14 +28,39 @@ export class BookingApi {
     return await this.request.post("/auth", { data });
   }
 
+  // 1. Публичные методы для тестов — короткие и понятные
   async updateBooking(
     bookingId: number,
     data: object,
     token: string,
   ): Promise<APIResponse> {
-    return await this.request.put(`${this.basePath}/${bookingId}`, {
+    return await this._sendModificationRequest("PUT", bookingId, data, token);
+  }
+
+  async patchBooking(
+    bookingId: number,
+    data: object,
+    token: string,
+  ): Promise<APIResponse> {
+    return await this._sendModificationRequest("PATCH", bookingId, data, token);
+  }
+
+  // 2. Приватный метод (начинается с _), который делает всю грязную работу
+  private async _sendModificationRequest(
+    method: "PUT" | "PATCH",
+    bookingId: number,
+    data: object,
+    token: string,
+  ): Promise<APIResponse> {
+    return await this.request.fetch(`${this.basePath}/${bookingId}`, {
+      method: method,
       headers: { Cookie: `token=${token}`, "Content-Type": "application/json" },
       data: data,
+    });
+  }
+  async deleteBooking(bookingId: number, token: string): Promise<APIResponse> {
+    return await this.request.delete(`${this.basePath}/${bookingId}`, {
+      headers: { Cookie: `token=${token}`, "Content-Type": "application/json" },
     });
   }
 }
