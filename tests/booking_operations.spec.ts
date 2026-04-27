@@ -79,5 +79,7 @@ test.describe("Booking API operations", () => {
     expect(deleteResponse).toBeOK();
     const responseBody = await deleteResponse.text();
     expect(responseBody).toEqual(BookingApi.DELETE_SUCCESS_MSG);
+    const getResponse = await bookingApi.getBooking(createdBookingId);
+    expect(getResponse.status()).toBe(404);
   });
 });
