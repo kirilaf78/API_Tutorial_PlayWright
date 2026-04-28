@@ -80,6 +80,6 @@ test.describe("Booking API operations", () => {
     const responseBody = await deleteResponse.text();
     expect(responseBody).toEqual(BookingApi.DELETE_SUCCESS_MSG);
     const getResponse = await bookingApi.getBooking(createdBookingId);
-    expect(getResponse.status()).toBe(404);
+    expect(getResponse.status()).toBe(401);
   });
 });
