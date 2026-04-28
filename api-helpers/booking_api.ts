@@ -2,7 +2,7 @@
 import { APIRequestContext, APIResponse } from "@playwright/test";
 
 export class BookingApi {
-  // Класс принимает контекст запроса от Playwright
+  // Class takes request context from Playwright
   readonly request: APIRequestContext;
   readonly basePath = "/booking";
   static readonly DELETE_SUCCESS_MSG = "Created";
@@ -11,12 +11,12 @@ export class BookingApi {
     this.request = request;
   }
 
-  // Метод для создания брони
+  // Method to create a booking
   async createBooking(data: object): Promise<APIResponse> {
     return await this.request.post(this.basePath, { data });
   }
 
-  // Метод для получения брони
+  // Method to get a booking
   async getBooking(bookingId: number): Promise<APIResponse> {
     return await this.request.get(`${this.basePath}/${bookingId}`);
   }
@@ -28,7 +28,7 @@ export class BookingApi {
     return await this.request.post("/auth", { data });
   }
 
-  // 1. Публичные методы для тестов — короткие и понятные
+  // 1. Public methods for tests - short and understandable
   async updateBooking(
     bookingId: number,
     data: object,
@@ -45,7 +45,7 @@ export class BookingApi {
     return await this._sendModificationRequest("PATCH", bookingId, data, token);
   }
 
-  // 2. Приватный метод (начинается с _), который делает всю грязную работу
+  // 2. Private method (starts with _) that does all the dirty work
   private async _sendModificationRequest(
     method: "PUT" | "PATCH",
     bookingId: number,

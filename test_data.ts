@@ -9,7 +9,7 @@ export function generateBookingData() {
   const checkInDate = DateTime.now().toFormat("yyyy-MM-dd");
   const checkOutDate = DateTime.now().plus({ days: 5 }).toFormat("yyyy-MM-dd");
 
-  // Возвращаем собранный объект
+  // Return the compiled object
   return {
     firstname: fname,
     lastname: lname,

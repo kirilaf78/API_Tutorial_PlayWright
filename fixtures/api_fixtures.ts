@@ -7,7 +7,7 @@ import {
   generateTokenData,
 } from "../test_data";
 
-// 1. Описываем типы того, что мы добавим в тест
+// 1. Describe the types of what we will add to the test
 type ApiFixtures = {
   bookingApi: BookingApi;
   requestData: ReturnType<typeof generateBookingData>;
@@ -16,30 +16,30 @@ type ApiFixtures = {
   validToken: string;
 };
 
-// 2. Расширяем базовый тест нашими фикстурами
+// 2. Expanded test with our fixtures
 export const test = base.extend<ApiFixtures>({
-  // Фикстура 1: Инициализация API клиента
+  // Fixture 1: Initialize API client
   bookingApi: async ({ request }, use) => {
     const api = new BookingApi(request);
-    await use(api); // Передаем клиент в тест
+    await use(api); // Pass the client to the test
   },
 
-  // Фикстура 2: Генерация случайных данных
+  // Fixture 2: Generate random data
   requestData: async ({}, use) => {
     const data = generateBookingData();
-    await use(data); // Передаем данные в тест
+    await use(data); // Pass the data to the test
   },
 
-  // Фикстура 3: Самое интересное — создаем бронирование!
-  // Обратите внимание, что она сама использует две предыдущие фикстуры
+  // Fixture 3: Most interesting - create a booking!
+  // Note that it uses two previous fixtures
   createdBookingId: async ({ bookingApi, requestData, validToken }, use) => {
     const postResponse = await bookingApi.createBooking(requestData);
-    expect(postResponse).toBeOK(); // Проверяем, что создание прошло успешно
+    expect(postResponse).toBeOK(); // Check that creation was successful
 
     const responseBody = await postResponse.json();
     const bookingId = responseBody.bookingid;
 
-    // Передаем готовый ID в тест
+    // Pass the ready ID to the test
     await use(bookingId);
     const deleteResponse = await bookingApi.deleteBooking(
       bookingId,
@@ -54,15 +54,15 @@ export const test = base.extend<ApiFixtures>({
 
   partialBookingData: async ({}, use) => {
     const data = generatePartialBookingData();
-    await use(data); // Передаем данные в тест
+    await use(data); // Pass the data to the test
   },
   validToken: async ({ bookingApi }, use) => {
     const tokenResponse = await bookingApi.getToken(generateTokenData());
-    expect(tokenResponse).toBeOK(); // Падаем красиво, если токен не выдался
+    expect(tokenResponse).toBeOK(); // Fail beautifully if the token is not issued
     const tokenResponseBody = await tokenResponse.json();
-    await use(tokenResponseBody.token); // Отдаем чистую строку токена в тест
+    await use(tokenResponseBody.token); // Pass the clean token string to the test
   },
 });
 
-// Экспортируем expect, чтобы не импортировать его отдельно в тестах
+// Export expect to avoid importing it separately in tests
 export { expect };
